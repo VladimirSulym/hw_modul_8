@@ -4,7 +4,7 @@ from django.db import models
 class Course(models.Model):
     title = models.CharField(verbose_name='Название курса', max_length=255)
     avatar = models.ImageField(verbose_name='Превью', upload_to='lms/course', blank=True, null=True)
-    city = models.CharField(max_length=255, unique=True, verbose_name='Город', blank=True, null=True)
+    city = models.CharField(max_length=255, verbose_name='Город', blank=True, null=True)
 
     class Meta:
         verbose_name = 'Курс'

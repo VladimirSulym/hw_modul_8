@@ -1,26 +1,39 @@
-from lms.models import Course
-from lms.serializers import CourseSerializer
-from rest_framework import viewsets
+from lms.models import Course, Lesson
+from lms.serializers import CourseSerializer, LessonSerializer
+from rest_framework import viewsets, permissions, generics
 
 class CourseViewSet(viewsets.ModelViewSet):
     """ViewSet-класс для работы с моделью Course"""
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
+    permission_classes = [permissions.AllowAny] # Разрешает запрос всем пользователям
 
-    # def list(self, request):
-    #     # Метод для вывода списка пользователей с определением выборки из базы и указанием сериализатора
-    #     queryset = Course.objects.all()
-    #     serializer = CourseSerializer(queryset, many=True)
-    #     return Response(serializer.data)
-    #
-    # def retrieve(self, request, pk=None):
-    #     # Метод для вывода информации по пользователю с определением выборки из базы и указанием сериализатора
-    #     queryset = Course.objects.all()
-    #     user = get_object_or_404(queryset, pk=pk)
-    #     serializer = CourseSerializer(user)
-    #     return Response(serializer.data)
-    #
-    # def create(self):
-    #     queryset = Course.objects.all()
-    #     serializer = CourseSerializer(queryset, many=True)
-    #     return Response(serializer.data)
+class LessonCreateAPIView(generics.CreateAPIView):
+    """API-вью для создания нового урока"""
+    serializer_class = LessonSerializer
+    queryset = Lesson.objects.all()
+    permission_classes = [permissions.AllowAny] # Разрешает запрос всем пользователям
+
+class LessonListAPIView(generics.ListAPIView):
+    """API-вью для получения списка всех уроков конкретного курса"""
+    serializer_class = LessonSerializer
+    permission_classes = [permissions.AllowAny] # Разрешает запрос всем пользователям
+    queryset = Lesson.objects.all()
+
+class LessonRetrieveAPIView(generics.RetrieveAPIView):
+    """API-вью для получения информации о конкретном уроке"""
+    serializer_class = LessonSerializer
+    permission_classes = [permissions.AllowAny] # Разрешает запрос всем пользователям
+    queryset = Lesson.objects.all()
+
+class LessonUpdateAPIView(generics.UpdateAPIView):
+    """API-вью для изменения информации о конкретном уроке"""
+    # permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser] # Разрешает запрос только администраторам
+    serializer_class = LessonSerializer
+    permission_classes = [permissions.AllowAny]  # Разрешает запрос всем пользователям
+    queryset = Lesson.objects.all()
+
+class LessonDestroyAPIView(generics.DestroyAPIView):
+    """API-вью для удаления урока"""
+    permission_classes = [permissions.AllowAny]  # Разрешает запрос всем пользователям
+    queryset = Lesson.objects.all()
