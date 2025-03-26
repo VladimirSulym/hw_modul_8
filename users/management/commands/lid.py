@@ -1,12 +1,11 @@
-
-from django.core.management.base import BaseCommand
 import os
-
-from dotenv import load_dotenv
 import random
 
+from django.core.management.base import BaseCommand
+from dotenv import load_dotenv
+
 from lms.models import Course, Lesson
-from users.models import User, Payment
+from users.models import Payment, User
 
 load_dotenv()
 
@@ -15,15 +14,13 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
 
-        course_list = ['Python', 'SQL', 'C++', 'JS', 'SQLite', 'React']
+        course_list = ["Python", "SQL", "C++", "JS", "SQLite", "React"]
 
         for index, value in enumerate(course_list):
             Course.objects.get_or_create(
-                title=value,
-                city='Москва' if index % 2 else 'Лондон'
+                title=value, city="Москва" if index % 2 else "Лондон"
             )
         self.stdout.write(self.style.SUCCESS(f"Курсы успешно созданы"))
-
 
         for course in Course.objects.all():
             for index in range(5):  # 5 уроков в каждом курсе
@@ -39,29 +36,34 @@ class Command(BaseCommand):
             first_name="Владимир",
             last_name="Сулым",
             phone="+7-985-123-45-67",
-            city='Москва',
+            city="Москва",
         )
         user.set_password(os.getenv("CSU_PASS"))
         user.save()
-        self.stdout.write(self.style.SUCCESS(f"Администратор успешно создан: {user.email}"))
+        self.stdout.write(
+            self.style.SUCCESS(f"Администратор успешно создан: {user.email}")
+        )
 
         for index, value in enumerate(course_list):
             if index % 2:
                 Payment.objects.create(
                     user=user,
                     amount=5000,
-                    payment_type=random.choices(['account', 'cash'])[0],
-                    course=Course.objects.get(title=value)
+                    payment_type=random.choices(["account", "cash"])[0],
+                    course=Course.objects.get(title=value),
                 )
                 self.stdout.write(self.style.SUCCESS(f"Оплачен крус {value}"))
             else:
                 for index in range(3):
-                    lesson = random.choices(Lesson.objects.filter(course=Course.objects.get(title=value)))
+                    lesson = random.choices(
+                        Lesson.objects.filter(course=Course.objects.get(title=value))
+                    )
                     Payment.objects.create(
                         user=user,
                         amount=1000,
-                        payment_type=random.choices(['account', 'cash'])[0],
-                        lesson=lesson[0]
+                        payment_type=random.choices(["account", "cash"])[0],
+                        lesson=lesson[0],
                     )
-                    self.stdout.write(self.style.SUCCESS(f"Оплачен урок {lesson[0]} в курсе {value}"))
-
+                    self.stdout.write(
+                        self.style.SUCCESS(f"Оплачен урок {lesson[0]} в курсе {value}")
+                    )

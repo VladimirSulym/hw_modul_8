@@ -8,38 +8,97 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Course',
+            name="Course",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=255, verbose_name='Название курса')),
-                ('avatar', models.ImageField(blank=True, null=True, upload_to='lms/course', verbose_name='Превью')),
-                ('city', models.CharField(blank=True, max_length=255, null=True, unique=True, verbose_name='Город')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "title",
+                    models.CharField(max_length=255, verbose_name="Название курса"),
+                ),
+                (
+                    "avatar",
+                    models.ImageField(
+                        blank=True,
+                        null=True,
+                        upload_to="lms/course",
+                        verbose_name="Превью",
+                    ),
+                ),
+                (
+                    "city",
+                    models.CharField(
+                        blank=True,
+                        max_length=255,
+                        null=True,
+                        unique=True,
+                        verbose_name="Город",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Курс',
-                'verbose_name_plural': 'Курсы',
-                'ordering': ['title'],
+                "verbose_name": "Курс",
+                "verbose_name_plural": "Курсы",
+                "ordering": ["title"],
             },
         ),
         migrations.CreateModel(
-            name='Lesson',
+            name="Lesson",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=255, verbose_name='Название урока')),
-                ('description', models.TextField(verbose_name='Описание')),
-                ('avatar', models.ImageField(blank=True, null=True, upload_to='lms/lesson/img', verbose_name='Превью')),
-                ('video', models.FileField(blank=True, null=True, upload_to='lms/lesson/video')),
-                ('course', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='lessons', to='lms.course', verbose_name='Курс')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "title",
+                    models.CharField(max_length=255, verbose_name="Название урока"),
+                ),
+                ("description", models.TextField(verbose_name="Описание")),
+                (
+                    "avatar",
+                    models.ImageField(
+                        blank=True,
+                        null=True,
+                        upload_to="lms/lesson/img",
+                        verbose_name="Превью",
+                    ),
+                ),
+                (
+                    "video",
+                    models.FileField(
+                        blank=True, null=True, upload_to="lms/lesson/video"
+                    ),
+                ),
+                (
+                    "course",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="lessons",
+                        to="lms.course",
+                        verbose_name="Курс",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Урок',
-                'verbose_name_plural': 'Уроки',
-                'ordering': ['title', 'course'],
+                "verbose_name": "Урок",
+                "verbose_name_plural": "Уроки",
+                "ordering": ["title", "course"],
             },
         ),
     ]
