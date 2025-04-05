@@ -59,6 +59,7 @@ class Lesson(models.Model):
     def __str__(self):
         return self.title
 
+
 class Payment(models.Model):
     PAYMENT_TYPE = {"account": "Счет", "cash": "Наличные"}
 

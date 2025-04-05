@@ -11,6 +11,7 @@ from lms.serializers import (
     PaymentSerializer,
 )
 
+
 class CourseViewSet(viewsets.ModelViewSet):
     """ViewSet-класс для работы с моделью Course"""
 
@@ -46,7 +47,8 @@ class CourseViewSet(viewsets.ModelViewSet):
         elif self.action == "delete":
             self.permission_classes = (
                 ~IsModerators,
-                permissions.IsAuthenticated, IsOwner,
+                permissions.IsAuthenticated,
+                IsOwner,
             )
         return super().get_permissions()
 
@@ -57,12 +59,16 @@ class LessonCreateAPIView(generics.CreateAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
     # permission_classes = [permissions.AllowAny] # Разрешает запрос всем пользователям
-    permission_classes = [~IsModerators, permissions.IsAuthenticated,]
+    permission_classes = [
+        ~IsModerators,
+        permissions.IsAuthenticated,
+    ]
 
     def perform_create(self, serializer):
         lesson = serializer.save()
         lesson.owner = self.request.user
         lesson.save()
+
 
 class LessonListAPIView(generics.ListAPIView):
     """API-вью для получения списка всех уроков конкретного курса"""
@@ -79,9 +85,9 @@ class LessonRetrieveAPIView(generics.RetrieveAPIView):
     # permission_classes = [permissions.AllowAny] # Разрешает запрос всем пользователям
     queryset = Lesson.objects.all()
     permission_classes = (
-                IsModerators | IsOwner,
-                permissions.IsAuthenticated,
-            )
+        IsModerators | IsOwner,
+        permissions.IsAuthenticated,
+    )
 
 
 class LessonUpdateAPIView(generics.UpdateAPIView):
@@ -92,9 +98,9 @@ class LessonUpdateAPIView(generics.UpdateAPIView):
     # permission_classes = [permissions.AllowAny]  # Разрешает запрос всем пользователям
     queryset = Lesson.objects.all()
     permission_classes = (
-                IsModerators | IsOwner,
-                permissions.IsAuthenticated,
-            )
+        IsModerators | IsOwner,
+        permissions.IsAuthenticated,
+    )
 
 
 class LessonDestroyAPIView(generics.DestroyAPIView):
@@ -104,7 +110,8 @@ class LessonDestroyAPIView(generics.DestroyAPIView):
     queryset = Lesson.objects.all()
     permission_classes = (
         ~IsModerators,
-        permissions.IsAuthenticated, IsOwner,
+        permissions.IsAuthenticated,
+        IsOwner,
     )
 
 
@@ -115,9 +122,9 @@ class CourseRetrieveAPIView(generics.RetrieveAPIView):
     # permission_classes = [permissions.AllowAny] # Разрешает запрос всем пользователям
     queryset = Course.objects.all()
     permission_classes = (
-                IsModerators | IsOwner,
-                permissions.IsAuthenticated,
-            )
+        IsModerators | IsOwner,
+        permissions.IsAuthenticated,
+    )
 
 
 class PaymentListAPIView(generics.ListAPIView):
