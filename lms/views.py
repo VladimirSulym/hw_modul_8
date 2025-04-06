@@ -1,14 +1,16 @@
+from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, permissions, viewsets
+from rest_framework.response import Response
 from rest_framework.filters import OrderingFilter, SearchFilter
 
-from lms.models import Course, Lesson, Payment
+from lms.models import Course, Lesson, Payment, Subscription
 from lms.permissions import IsModerators, IsOwner
 from lms.serializers import (
     CourseDetailSerializer,
     CourseSerializer,
     LessonSerializer,
-    PaymentSerializer,
+    PaymentSerializer, SubscriptionSerializer,
 )
 
 
@@ -139,3 +141,27 @@ class PaymentListAPIView(generics.ListAPIView):
     ]
     filterset_fields = ["course", "payment_type"]
     ordering_fields = ["payment_date"]
+
+class SubscriptionAPIView(generics.CreateAPIView):
+    """API-вью для подписки на курс"""
+    queryset = Subscription.objects.all()
+    serializer_class = SubscriptionSerializer
+    permission_classes = [permissions.IsAuthenticated,]
+
+    def post(self, request, *args, **kwargs):
+        user = self.request.user
+        course_id = self.request.data.get('course')
+        course_item = get_object_or_404(Course, id=course_id)
+
+        subs_item = Subscription.objects.filter(user=user, course=course_item)
+
+        # Если подписка у пользователя на этот курс есть - удаляем ее
+        if subs_item.exists():
+            subs_item.delete()
+            message = 'подписка удалена'
+        # Если подписки у пользователя на этот курс нет - создаем ее
+        else:
+            Subscription.objects.create(user=user, course=course_item)
+            message = 'подписка добавлена'
+        # Возвращаем ответ в API
+        return Response({"message": message})
