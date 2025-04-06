@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.filters import OrderingFilter, SearchFilter
 
 from lms.models import Course, Lesson, Payment, Subscription
+from lms.paginators import MyPagination
 from lms.permissions import IsModerators, IsOwner
 from lms.serializers import (
     CourseDetailSerializer,
@@ -21,6 +22,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     # permission_classes = [permissions.AllowAny] # Разрешает запрос всем пользователям
     # permission_classes = [permissions.IsAuthenticated]
+    pagination_class = MyPagination
 
     def perform_create(self, serializer):
         course = serializer.save()
@@ -78,6 +80,7 @@ class LessonListAPIView(generics.ListAPIView):
     serializer_class = LessonSerializer
     # permission_classes = [permissions.AllowAny] # Разрешает запрос всем пользователям
     queryset = Lesson.objects.all()
+    pagination_class = MyPagination
 
 
 class LessonRetrieveAPIView(generics.RetrieveAPIView):
