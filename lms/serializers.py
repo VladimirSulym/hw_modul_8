@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from lms.models import Course, Lesson, Payment, Subscription
+from lms.models import Course, Lesson, Payment, Subscription, CoursePayment
 from lms.validators import DataInputValidator
 
 
@@ -63,4 +63,9 @@ class PaymentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Payment
+        fields = "__all__"
+
+class CoursePaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CoursePayment
         fields = "__all__"

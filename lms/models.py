@@ -109,3 +109,49 @@ class Subscription(models.Model):
         blank=True,
         null=True,
     )
+
+
+class CoursePayment(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        related_name="course_payments",
+        verbose_name="Пользователь",
+        blank=True,
+        null=True,
+        help_text='Укажите пользователя'
+    )
+    course = models.ForeignKey(
+        Course,
+        on_delete=models.CASCADE,
+        related_name="course_payments",
+        verbose_name="Курс",
+        blank=True,
+        null=True,
+        help_text='Укажите курс'
+    )
+    amount = models.PositiveIntegerField(
+        verbose_name="Сумма оплаты",
+        help_text="Укажите сумму оплаты",
+    )
+    session_id = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name="ID сессии",
+        help_text="Укажите ID сессии",
+    )
+    link = models.URLField(
+        max_length=400,
+        blank=True,
+        null=True,
+        verbose_name="Ссылка на оплату",
+        help_text="Укажите ссылку на оплату",
+    )
+
+    class Meta:
+        verbose_name = "Оплата курса"
+        verbose_name_plural = "Оплаты курсов"
+
+    def __str__(self):
+        return f"{self.user} - {self.course} - {self.amount}"
