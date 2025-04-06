@@ -4,11 +4,11 @@ from lms.models import Course, Lesson, Payment, Subscription
 from lms.validators import DataInputValidator
 
 
-
 class SubscriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subscription
         fields = "__all__"
+
 
 class LessonSerializer(serializers.ModelSerializer):
 
@@ -33,7 +33,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ['id', 'title', 'avatar', 'city', 'owner', 'info_sub']
+        fields = ["id", "title", "avatar", "city", "owner", "info_sub"]
         validators = [
             DataInputValidator(fields="title"),
         ]
@@ -56,7 +56,7 @@ class CourseDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ["title", "city", "course_count_lessons", "info_lessons", 'info_sub']
+        fields = ["title", "city", "course_count_lessons", "info_lessons", "info_sub"]
 
 
 class PaymentSerializer(serializers.ModelSerializer):

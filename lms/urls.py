@@ -10,7 +10,8 @@ from lms.views import (
     LessonListAPIView,
     LessonRetrieveAPIView,
     LessonUpdateAPIView,
-    PaymentListAPIView, SubscriptionAPIView,
+    PaymentListAPIView,
+    SubscriptionAPIView,
 )
 
 app_name = LmsConfig.name

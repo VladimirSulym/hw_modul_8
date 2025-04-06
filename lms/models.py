@@ -64,7 +64,10 @@ class Payment(models.Model):
     PAYMENT_TYPE = {"account": "Счет", "cash": "Наличные"}
 
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, verbose_name="Пользователь", related_name='payments'
+        User,
+        on_delete=models.CASCADE,
+        verbose_name="Пользователь",
+        related_name="payments",
     )
     amount = models.IntegerField(verbose_name="Сумма оплаты")
     payment_date = models.DateTimeField(verbose_name="Дата оплаты", auto_now_add=True)
@@ -88,10 +91,21 @@ class Payment(models.Model):
     def __str__(self):
         return f"Платеж {self.pk} на сумму {self.amount} рублей от {self.user}"
 
+
 class Subscription(models.Model):
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, verbose_name="Пользователь", related_name='sub', blank=True, null=True
+        User,
+        on_delete=models.CASCADE,
+        verbose_name="Пользователь",
+        related_name="sub",
+        blank=True,
+        null=True,
     )
     course = models.ForeignKey(
-        Course, on_delete=models.CASCADE, verbose_name="Курс", related_name='sub', blank=True, null=True
+        Course,
+        on_delete=models.CASCADE,
+        verbose_name="Курс",
+        related_name="sub",
+        blank=True,
+        null=True,
     )
