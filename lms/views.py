@@ -1,15 +1,20 @@
+from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, permissions, viewsets
+from rest_framework.response import Response
 from rest_framework.filters import OrderingFilter, SearchFilter
 
-from lms.models import Course, Lesson, Payment
+from lms.models import Course, Lesson, Payment, Subscription
+from lms.paginators import MyPagination
 from lms.permissions import IsModerators, IsOwner
 from lms.serializers import (
     CourseDetailSerializer,
     CourseSerializer,
     LessonSerializer,
     PaymentSerializer,
+    SubscriptionSerializer,
 )
+
 
 class CourseViewSet(viewsets.ModelViewSet):
     """ViewSet-класс для работы с моделью Course"""
@@ -18,6 +23,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     # permission_classes = [permissions.AllowAny] # Разрешает запрос всем пользователям
     # permission_classes = [permissions.IsAuthenticated]
+    pagination_class = MyPagination
 
     def perform_create(self, serializer):
         course = serializer.save()
@@ -46,7 +52,8 @@ class CourseViewSet(viewsets.ModelViewSet):
         elif self.action == "delete":
             self.permission_classes = (
                 ~IsModerators,
-                permissions.IsAuthenticated, IsOwner,
+                permissions.IsAuthenticated,
+                IsOwner,
             )
         return super().get_permissions()
 
@@ -57,12 +64,16 @@ class LessonCreateAPIView(generics.CreateAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
     # permission_classes = [permissions.AllowAny] # Разрешает запрос всем пользователям
-    permission_classes = [~IsModerators, permissions.IsAuthenticated,]
+    permission_classes = [
+        ~IsModerators,
+        permissions.IsAuthenticated,
+    ]
 
     def perform_create(self, serializer):
         lesson = serializer.save()
         lesson.owner = self.request.user
         lesson.save()
+
 
 class LessonListAPIView(generics.ListAPIView):
     """API-вью для получения списка всех уроков конкретного курса"""
@@ -70,6 +81,7 @@ class LessonListAPIView(generics.ListAPIView):
     serializer_class = LessonSerializer
     # permission_classes = [permissions.AllowAny] # Разрешает запрос всем пользователям
     queryset = Lesson.objects.all()
+    pagination_class = MyPagination
 
 
 class LessonRetrieveAPIView(generics.RetrieveAPIView):
@@ -79,9 +91,9 @@ class LessonRetrieveAPIView(generics.RetrieveAPIView):
     # permission_classes = [permissions.AllowAny] # Разрешает запрос всем пользователям
     queryset = Lesson.objects.all()
     permission_classes = (
-                IsModerators | IsOwner,
-                permissions.IsAuthenticated,
-            )
+        IsModerators | IsOwner,
+        permissions.IsAuthenticated,
+    )
 
 
 class LessonUpdateAPIView(generics.UpdateAPIView):
@@ -92,9 +104,9 @@ class LessonUpdateAPIView(generics.UpdateAPIView):
     # permission_classes = [permissions.AllowAny]  # Разрешает запрос всем пользователям
     queryset = Lesson.objects.all()
     permission_classes = (
-                IsModerators | IsOwner,
-                permissions.IsAuthenticated,
-            )
+        IsModerators | IsOwner,
+        permissions.IsAuthenticated,
+    )
 
 
 class LessonDestroyAPIView(generics.DestroyAPIView):
@@ -103,8 +115,8 @@ class LessonDestroyAPIView(generics.DestroyAPIView):
     # permission_classes = [permissions.AllowAny]  # Разрешает запрос всем пользователям
     queryset = Lesson.objects.all()
     permission_classes = (
-        ~IsModerators,
-        permissions.IsAuthenticated, IsOwner,
+        permissions.IsAuthenticated,
+        IsOwner,
     )
 
 
@@ -115,9 +127,9 @@ class CourseRetrieveAPIView(generics.RetrieveAPIView):
     # permission_classes = [permissions.AllowAny] # Разрешает запрос всем пользователям
     queryset = Course.objects.all()
     permission_classes = (
-                IsModerators | IsOwner,
-                permissions.IsAuthenticated,
-            )
+        IsModerators | IsOwner,
+        permissions.IsAuthenticated,
+    )
 
 
 class PaymentListAPIView(generics.ListAPIView):
@@ -132,3 +144,31 @@ class PaymentListAPIView(generics.ListAPIView):
     ]
     filterset_fields = ["course", "payment_type"]
     ordering_fields = ["payment_date"]
+
+
+class SubscriptionAPIView(generics.CreateAPIView):
+    """API-вью для подписки на курс"""
+
+    queryset = Subscription.objects.all()
+    serializer_class = SubscriptionSerializer
+    permission_classes = [
+        permissions.IsAuthenticated,
+    ]
+
+    def post(self, request, *args, **kwargs):
+        user = self.request.user
+        course_id = self.request.data.get("course")
+        course_item = get_object_or_404(Course, id=course_id)
+
+        subs_item = Subscription.objects.filter(user=user, course=course_item)
+
+        # Если подписка у пользователя на этот курс есть - удаляем ее
+        if subs_item.exists():
+            subs_item.delete()
+            message = "подписка удалена"
+        # Если подписки у пользователя на этот курс нет - создаем ее
+        else:
+            Subscription.objects.create(user=user, course=course_item)
+            message = "подписка добавлена"
+        # Возвращаем ответ в API
+        return Response({"message": message})
