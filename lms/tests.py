@@ -24,15 +24,17 @@ class LessonTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             response.json()["results"],
-            [{
-                "id": 4,
-                "title": "Тестовый урок",
-                "description": "Описание тестового урока",
-                "avatar": None,
-                "video": None,
-                "course": 3,
-                "owner": 3,
-            }]
+            [
+                {
+                    "id": 4,
+                    "title": "Тестовый урок",
+                    "description": "Описание тестового урока",
+                    "avatar": None,
+                    "video": None,
+                    "course": 3,
+                    "owner": 3,
+                }
+            ],
         )
 
     def test_lesson_retrieve(self):

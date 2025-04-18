@@ -4,7 +4,7 @@ from rest_framework import generics, permissions, viewsets
 from rest_framework.response import Response
 from rest_framework.filters import OrderingFilter, SearchFilter
 
-from lms.models import Course, Lesson, Payment, Subscription
+from lms.models import Course, Lesson, Payment, Subscription, CoursePayment
 from lms.paginators import MyPagination
 from lms.permissions import IsModerators, IsOwner
 from lms.serializers import (
@@ -12,8 +12,9 @@ from lms.serializers import (
     CourseSerializer,
     LessonSerializer,
     PaymentSerializer,
-    SubscriptionSerializer,
+    SubscriptionSerializer, CoursePaymentSerializer,
 )
+from lms.services import create_stripe_product, create_stripe_price, create_stripe_session
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -172,3 +173,21 @@ class SubscriptionAPIView(generics.CreateAPIView):
             message = "подписка добавлена"
         # Возвращаем ответ в API
         return Response({"message": message})
+
+class CoursePaymentCreateAPIView(generics.CreateAPIView):
+    """API-вью для оплаты курсов"""
+
+    serializer_class = CoursePaymentSerializer
+    queryset = CoursePayment.objects.all()
+    permission_classes = [
+        permissions.IsAuthenticated,
+    ]
+
+    def perform_create(self, serializer):
+        payment = serializer.save(user=self.request.user)
+        product = create_stripe_product(name=payment.course.title)
+        price = create_stripe_price(amount=payment.amount, product=product)
+        session_id, payment_link = create_stripe_session(price)
+        payment.session_id = session_id
+        payment.link = payment_link
+        payment.save()
