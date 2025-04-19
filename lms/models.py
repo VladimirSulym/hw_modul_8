@@ -119,7 +119,7 @@ class CoursePayment(models.Model):
         verbose_name="Пользователь",
         blank=True,
         null=True,
-        help_text='Укажите пользователя'
+        help_text="Укажите пользователя",
     )
     course = models.ForeignKey(
         Course,
@@ -128,7 +128,7 @@ class CoursePayment(models.Model):
         verbose_name="Курс",
         blank=True,
         null=True,
-        help_text='Укажите курс'
+        help_text="Укажите курс",
     )
     amount = models.PositiveIntegerField(
         verbose_name="Сумма оплаты",

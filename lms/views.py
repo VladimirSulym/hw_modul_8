@@ -12,9 +12,16 @@ from lms.serializers import (
     CourseSerializer,
     LessonSerializer,
     PaymentSerializer,
-    SubscriptionSerializer, CoursePaymentSerializer,
+    SubscriptionSerializer,
+    CoursePaymentSerializer,
 )
-from lms.services import create_stripe_product, create_stripe_price, create_stripe_session
+from lms.services import (
+    create_stripe_product,
+    create_stripe_price,
+    create_stripe_session,
+)
+
+from lms.tasks import send_mail_user
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -66,6 +73,7 @@ class LessonCreateAPIView(generics.CreateAPIView):
     queryset = Lesson.objects.all()
     # permission_classes = [permissions.AllowAny] # Разрешает запрос всем пользователям
     permission_classes = [
+        # permissions.AllowAny,
         ~IsModerators,
         permissions.IsAuthenticated,
     ]
@@ -73,6 +81,11 @@ class LessonCreateAPIView(generics.CreateAPIView):
     def perform_create(self, serializer):
         lesson = serializer.save()
         lesson.owner = self.request.user
+        if lesson.course.sub.all().exists():
+            subscriber_ids = list(lesson.course.sub.values_list("id", flat=True))
+            send_mail_user.delay(
+                "добавлен", lesson.course.title, lesson.title, subscriber_ids
+            )
         lesson.save()
 
 
@@ -105,9 +118,19 @@ class LessonUpdateAPIView(generics.UpdateAPIView):
     # permission_classes = [permissions.AllowAny]  # Разрешает запрос всем пользователям
     queryset = Lesson.objects.all()
     permission_classes = (
+        # permissions.AllowAny,
         IsModerators | IsOwner,
         permissions.IsAuthenticated,
     )
+
+    def perform_update(self, serializer):
+        lesson = serializer.save()
+        if lesson.course.sub.all().exists():
+            subscriber_ids = list(lesson.course.sub.values_list("id", flat=True))
+            send_mail_user.delay(
+                "обновлен", lesson.course.title, lesson.title, subscriber_ids
+            )
+        lesson.save()
 
 
 class LessonDestroyAPIView(generics.DestroyAPIView):
@@ -119,6 +142,14 @@ class LessonDestroyAPIView(generics.DestroyAPIView):
         permissions.IsAuthenticated,
         IsOwner,
     )
+
+    def perform_destroy(self, instance):
+        if instance.course.sub.all().exists():
+            subscriber_ids = list(instance.course.sub.values_list("id", flat=True))
+            send_mail_user.delay(
+                "удален", instance.course.title, instance.title, subscriber_ids
+            )
+        instance.delete()
 
 
 class CourseRetrieveAPIView(generics.RetrieveAPIView):
@@ -173,6 +204,7 @@ class SubscriptionAPIView(generics.CreateAPIView):
             message = "подписка добавлена"
         # Возвращаем ответ в API
         return Response({"message": message})
+
 
 class CoursePaymentCreateAPIView(generics.CreateAPIView):
     """API-вью для оплаты курсов"""

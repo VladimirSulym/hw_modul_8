@@ -65,6 +65,7 @@ class PaymentSerializer(serializers.ModelSerializer):
         model = Payment
         fields = "__all__"
 
+
 class CoursePaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = CoursePayment

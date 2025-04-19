@@ -11,7 +11,8 @@ from lms.views import (
     LessonRetrieveAPIView,
     LessonUpdateAPIView,
     PaymentListAPIView,
-    SubscriptionAPIView, CoursePaymentCreateAPIView,
+    SubscriptionAPIView,
+    CoursePaymentCreateAPIView,
 )
 
 app_name = LmsConfig.name
@@ -31,6 +32,7 @@ urlpatterns = [
     ),
     path("payment/", PaymentListAPIView.as_view(), name="payment"),
     path("sub/", SubscriptionAPIView.as_view(), name="subscription"),
-
-    path("payment_course/", CoursePaymentCreateAPIView.as_view(), name="payment_course"),
+    path(
+        "payment_course/", CoursePaymentCreateAPIView.as_view(), name="payment_course"
+    ),
 ] + router.urls
