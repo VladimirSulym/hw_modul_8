@@ -8,6 +8,7 @@ load_dotenv()
 
 stripe.api_key = os.getenv("STRIPE_API_KEY")
 
+
 def create_stripe_product(name):
     """Создание продукта в Stripe"""
 
@@ -17,6 +18,7 @@ def create_stripe_product(name):
     )
 
     return product
+
 
 def create_stripe_price(amount, product):
     """Создание цены в Stripe"""
@@ -29,6 +31,7 @@ def create_stripe_price(amount, product):
     )
 
     return price
+
 
 def create_stripe_session(price):
     """Создание сессии в Stripe"""
