@@ -1,0 +1,92 @@
+services:
+  web:
+    build: .
+    command: >
+      bash -c "python manage.py migrate && 
+              python manage.py lid &&
+              python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/code
+      - static_volume:/code/static
+      - media_volume:/code/media
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - DATABASE_HOST=db
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  db:
+    image: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - .env
+    expose:
+      - "5432"
+    environment:
+      - POSTGRES_DB=${DATABASE_NAME}
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis
+    volumes:
+      - redis_data:/data
+    expose:
+      - "6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  celery:
+    build: .
+    volumes:
+      - .:/code
+      - media_volume:/code/media
+    env_file:
+      - .env
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - DATABASE_HOST=db
+    depends_on:
+      - redis
+      - db
+      - web
+
+  celery-beat:
+    build: .
+    command: celery -A config worker --beat --scheduler django --loglevel=info
+    volumes:
+      - .:/code
+    env_file:
+      - .env
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - DATABASE_HOST=db
+    depends_on:
+      - redis
+      - db
+      - web
+
+volumes:
+  postgres_data:
+  redis_data:
+  static_volume:
+  media_volume:

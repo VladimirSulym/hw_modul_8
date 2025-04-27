@@ -4,8 +4,8 @@ import random
 from django.core.management.base import BaseCommand
 from dotenv import load_dotenv
 
-from lms.models import Course, Lesson
-from users.models import Payment, User
+from lms.models import Course, Lesson, Payment
+from users.models import User
 
 load_dotenv()
 
@@ -37,6 +37,9 @@ class Command(BaseCommand):
             last_name="Сулым",
             phone="+7-985-123-45-67",
             city="Москва",
+            is_superuser=True,
+            is_active=True,
+            is_staff=True,
         )
         user.set_password(os.getenv("CSU_PASS"))
         user.save()
