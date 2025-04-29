@@ -70,7 +70,9 @@ jobs:
         postgresql-version: 17
 
     - name: Run migrations
-      run: python manage.py migrate
+      run: |
+        service postgresql start
+        python manage.py migrate
 
     - name: Run tests
       run: python manage.py test
