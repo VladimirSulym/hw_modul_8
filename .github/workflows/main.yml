@@ -71,7 +71,7 @@ jobs:
 
     - name: Run migrations
       run: |
-        service postgresql start
+        sudo service postgresql start
         python manage.py migrate
 
     - name: Run tests
