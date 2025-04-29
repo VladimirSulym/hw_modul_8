@@ -3,7 +3,6 @@ from rest_framework.routers import DefaultRouter
 
 from lms.apps import LmsConfig
 from lms.views import (
-    CourseRetrieveAPIView,
     CourseViewSet,
     LessonCreateAPIView,
     LessonDestroyAPIView,

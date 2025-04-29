@@ -2,7 +2,7 @@ from django.urls.base import reverse
 from rest_framework.test import APITestCase
 from rest_framework import status
 
-from lms.models import Course, Lesson, Subscription
+from lms.models import Course, Lesson
 from users.models import User
 
 
