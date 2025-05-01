@@ -11,9 +11,7 @@ class User(AbstractUser):
     avatar = models.ImageField(
         verbose_name="Фотография", upload_to="users/", blank=True, null=True
     )
-    city = models.CharField(
-        max_length=255, verbose_name="Город", blank=True, null=True
-    )
+    city = models.CharField(max_length=255, verbose_name="Город", blank=True, null=True)
 
     class Meta:
         verbose_name = "Пользователь"
