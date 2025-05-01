@@ -1,6 +1,6 @@
 name: Django CI/CD
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   lint:
@@ -114,9 +114,6 @@ jobs:
         context: .
         push: true
         tags: ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }}
-
-    - name: Run Docker Compose
-      run: docker compose up -d
 
   deploy:
     needs: build
