@@ -50,11 +50,11 @@ jobs:
       DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
       DATABASE_HOST: localhost
       DATABASE_PORT: 5432
-#      EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
-#      EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
-#      EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
-#      EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
-#      EMAIL_USE_SSL: ${{ secrets.EMAIL_USE_SSL }}
+      EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+      EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
+      EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
+      EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
+      EMAIL_USE_SSL: ${{ secrets.EMAIL_USE_SSL }}
 
     steps:
     - name: Check out code
@@ -95,9 +95,6 @@ jobs:
     - name: Log in to Docker Hub
       run: echo ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
 
-#    - name: Set up QEMU
-#      uses: docker/setup-qemu-action@v1
-
     - name: Build Docker images
       run: docker-compose build
 
@@ -110,19 +107,6 @@ jobs:
 
     - name: Run Docker Compose
       run: docker-compose up -d
-
-#    steps:
-#    - name: Check out code
-#      uses: actions/checkout@v3
-#
-#    - name: Log in to Docker Hub
-#      run: echo ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
-#
-#    - name: Build Docker image
-#      run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }} .
-#
-#    - name: Push Docker image to Docker Hub
-#      run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }}
 
   deploy:
     needs: build
@@ -149,5 +133,4 @@ jobs:
           docker stop myapp || true
           docker rm myapp || true
           docker-compose up -d
-#          docker run -d --name myapp -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }}
           EOF
