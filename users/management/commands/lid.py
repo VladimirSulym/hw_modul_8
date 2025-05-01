@@ -32,7 +32,7 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS("Уроки успешно созданы"))
 
         user, created_user = User.objects.get_or_create(
-            email="admin@admin.ru",
+            email="vormagic@ya.ru",
             first_name="Владимир",
             last_name="Сулым",
             phone="+7-985-123-45-67",

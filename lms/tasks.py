@@ -20,6 +20,15 @@ def send_mail_user(message, course, lesson, users):
             [email],
         )
 
+@shared_task
+def send_mail_test():
+    send_mail(
+        "Celery is working",
+        f"Celery is working",
+        EMAIL_HOST_USER,
+        ['vormagic@ya.ru',],
+    )
+
 
 @shared_task
 def check_inactive_users():

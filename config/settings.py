@@ -187,8 +187,8 @@ DEFAULT_FROM_EMAIL = os.getenv("EMAIL_HOST_USER")
 
 CELERY_BEAT_SCHEDULE = {
     "check-inactive-users": {
-        "task": "lms.tasks.check_inactive_users",
-        "schedule": timedelta(days=1),
+        "task": "lms.tasks.send_mail_test",
+        "schedule": timedelta(minutes=3),
     },
 }
 
