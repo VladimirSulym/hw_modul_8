@@ -31,6 +31,7 @@ def send_mail_user(message, course, lesson, users):
 #         ],
 #     )
 
+
 @shared_task
 def check_inactive_users():
     month_ago = timezone.now() - timedelta(days=30)
