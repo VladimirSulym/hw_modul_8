@@ -114,40 +114,42 @@ jobs:
     - name: Build and push Docker Compose services
       run: |
         docker compose build
-        docker compose push
-
-    - name: Add known hosts
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
-
-    - name: Set up SSH
-      uses: webfactory/ssh-agent@v0.9.0
-      with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-    - name: Copy configuration files
-      uses: appleboy/scp-action@master
-      with:
-        host: ${{ secrets.SERVER_HOST }}
-        username: ${{ secrets.SERVER_USERNAME }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        source: "docker-compose.yml,Dockerfile"
-        target: "~/app"
-
-    - name: Deploy to server
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.SERVER_HOST }}
-        username: ${{ secrets.SERVER_USERNAME }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-          cd ~/app
-          docker compose pull
-          docker compose down || true
-          docker compose up -d
+        docker compose push hw_modul_8-web
+        docker compose push hw_modul_8-celery
+        docker compose push hw_modul_8-celery-beat
+#
+#    - name: Add known hosts
+#      run: |
+#        mkdir -p ~/.ssh
+#        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+#        chmod 600 ~/.ssh/id_rsa
+#        ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+#
+#    - name: Set up SSH
+#      uses: webfactory/ssh-agent@v0.9.0
+#      with:
+#        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+#
+#    - name: Copy configuration files
+#      uses: appleboy/scp-action@master
+#      with:
+#        host: ${{ secrets.SERVER_HOST }}
+#        username: ${{ secrets.SERVER_USERNAME }}
+#        key: ${{ secrets.SSH_PRIVATE_KEY }}
+#        source: "docker-compose.yml,Dockerfile"
+#        target: "~/app"
+#
+#    - name: Deploy to server
+#      uses: appleboy/ssh-action@master
+#      with:
+#        host: ${{ secrets.SERVER_HOST }}
+#        username: ${{ secrets.SERVER_USERNAME }}
+#        key: ${{ secrets.SSH_PRIVATE_KEY }}
+#        script: |
+#          cd ~/app
+#          docker compose pull
+#          docker compose down || true
+#          docker compose up -d
 
 #    - name: Log in to Docker Hub
 #      run: echo ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
