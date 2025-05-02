@@ -114,9 +114,9 @@ jobs:
     - name: Build and push Docker Compose services
       run: |
         docker compose build
-        docker compose push hw_modul_8-web
-        docker compose push hw_modul_8-celery
-        docker compose push hw_modul_8-celery-beat
+        docker compose push web
+        docker compose push celery
+        docker compose push celery-beat
 #
 #    - name: Add known hosts
 #      run: |
