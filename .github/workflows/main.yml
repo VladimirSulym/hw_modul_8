@@ -153,8 +153,11 @@ jobs:
         host: ${{ secrets.SERVER_HOST }}
         username: ${{ secrets.SERVER_USERNAME }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        source: "docker-compose.yml,Dockerfile"
+        source: "docker-compose.yml,Dockerfile,.env"
         target: "~/app"
+        strip_components: 0
+        overwrite: true
+
 
     - name: Deploy to server
       uses: appleboy/ssh-action@v1.2.2
