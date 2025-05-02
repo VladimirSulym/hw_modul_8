@@ -117,9 +117,9 @@ jobs:
 
     - name: Push Docker Compose image
       run: |
-        docker tag web ${{ secrets.DOCKER_HUB_USERNAME }}/web:${{ github.sha }}
-        docker tag celery ${{ secrets.DOCKER_HUB_USERNAME }}/celery:${{ github.sha }}
-        docker tag celery-beat ${{ secrets.DOCKER_HUB_USERNAME }}/celery-beat:${{ github.sha }}
+        docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/web ${{ secrets.DOCKER_HUB_USERNAME }}/web:${{ github.sha }}
+        docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/celery ${{ secrets.DOCKER_HUB_USERNAME }}/celery:${{ github.sha }}
+        docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/celery-beat ${{ secrets.DOCKER_HUB_USERNAME }}/celery-beat:${{ github.sha }}
         docker push ${{ secrets.DOCKER_HUB_USERNAME }}/web:${{ github.sha }}
         docker push ${{ secrets.DOCKER_HUB_USERNAME }}/celery:${{ github.sha }}
         docker push ${{ secrets.DOCKER_HUB_USERNAME }}/celery-beat:${{ github.sha }}
