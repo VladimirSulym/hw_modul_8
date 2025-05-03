@@ -101,7 +101,7 @@ services:
     volumes:
       - static_volume:/hw_modul_8/staticfiles
       - media_volume:/hw_modul_8/media
-      - nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx.conf:/etc/nginx/nginx.conf
     ports:
       - "80:80"
 #    command: nginx -g 'daemon off;'
