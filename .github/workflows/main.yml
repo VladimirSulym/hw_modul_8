@@ -183,6 +183,7 @@ jobs:
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/celery-beat:latest
           docker compose down || true
           docker system prune -f  # очистка неиспользуемых ресурсов
+          mkdir -p /etc/nginx
           docker compose up -d
 
 #    - name: Log in to Docker Hub
