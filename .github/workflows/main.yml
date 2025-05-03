@@ -168,7 +168,6 @@ jobs:
         strip_components: 0
         overwrite: true
 
-
     - name: Deploy to server
       uses: appleboy/ssh-action@v1.2.2
       with:
