@@ -166,6 +166,7 @@ jobs:
         source: "docker-compose.yml,Dockerfile,.env,nginx.conf"
         target: "~/app"
         strip_components: 0
+        tar_options: '--keep-directory-symlink'
         overwrite: true
 
     - name: Deploy to server
