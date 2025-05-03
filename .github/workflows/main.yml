@@ -163,7 +163,7 @@ jobs:
         host: ${{ secrets.SERVER_HOST }}
         username: ${{ secrets.SERVER_USERNAME }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        source: "docker-compose.yml,Dockerfile,.env"
+        source: "docker-compose.yml,Dockerfile,.env,nginx.conf"
         target: "~/app"
         strip_components: 0
         overwrite: true
@@ -177,13 +177,13 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           cd ~/app
-          mkdir /etc/nginx/ || true
+#          mkdir /etc/nginx/ || true
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/web:latest
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/celery:latest
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/celery-beat:latest
           docker compose down || true
           docker system prune -f  # очистка неиспользуемых ресурсов
-          mkdir -p /etc/nginx
+#          mkdir -p /etc/nginx
           docker compose up -d
 
 #    - name: Log in to Docker Hub
