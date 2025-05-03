@@ -176,13 +176,11 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           cd ~/app
-#          mkdir /etc/nginx/ || true
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/web:latest
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/celery:latest
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/celery-beat:latest
           docker compose down || true
           docker system prune -f  # очистка неиспользуемых ресурсов
-#          mkdir -p /etc/nginx
           docker compose up -d
 
 #    - name: Log in to Docker Hub
