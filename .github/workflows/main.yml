@@ -163,10 +163,9 @@ jobs:
         host: ${{ secrets.SERVER_HOST }}
         username: ${{ secrets.SERVER_USERNAME }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        source: "docker-compose.yml,Dockerfile,.env,nginx.conf"
+        source: "docker-compose.yml,Dockerfile,.env,./nginx.conf"
         target: "~/app"
         strip_components: 0
-        tar_options: '--keep-directory-symlink'
         overwrite: true
 
     - name: Deploy to server
