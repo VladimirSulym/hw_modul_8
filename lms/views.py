@@ -113,7 +113,8 @@ class LessonRetrieveAPIView(generics.RetrieveAPIView):
 class LessonUpdateAPIView(generics.UpdateAPIView):
     """API-вью для изменения информации о конкретном уроке"""
 
-    # permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser] # Разрешает запрос только администраторам
+    # permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    # Разрешает запрос только администраторам
     serializer_class = LessonSerializer
     # permission_classes = [permissions.AllowAny]  # Разрешает запрос всем пользователям
     queryset = Lesson.objects.all()

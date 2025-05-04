@@ -20,19 +20,19 @@ class Command(BaseCommand):
             Course.objects.get_or_create(
                 title=value, city="Москва" if index % 2 else "Лондон"
             )
-        self.stdout.write(self.style.SUCCESS(f"Курсы успешно созданы"))
+        self.stdout.write(self.style.SUCCESS("Курсы успешно созданы"))
 
         for course in Course.objects.all():
             for index in range(5):  # 5 уроков в каждом курсе
                 Lesson.objects.get_or_create(
                     course=course,
-                    title=f"Урок {index+1}",
-                    description=f"Описание урока {index+1} по курсу {course}",
+                    title=f"Урок {index + 1}",
+                    description=f"Описание урока {index + 1} по курсу {course}",
                 )
-        self.stdout.write(self.style.SUCCESS(f"Уроки успешно созданы"))
+        self.stdout.write(self.style.SUCCESS("Уроки успешно созданы"))
 
         user, created_user = User.objects.get_or_create(
-            email="admin@admin.ru",
+            email="vormagic@ya.ru",
             first_name="Владимир",
             last_name="Сулым",
             phone="+7-985-123-45-67",

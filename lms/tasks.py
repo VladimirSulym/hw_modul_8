@@ -14,11 +14,23 @@ def send_mail_user(message, course, lesson, users):
         email = User.objects.get(id=user).email
         print(email)
         send_mail(
-            f"Изменение в курсе на который вы подписаны",
+            "Изменение в курсе на который вы подписаны",
             f"На курсе {course} {message} урок {lesson}",
             EMAIL_HOST_USER,
             [email],
         )
+
+# @shared_task
+# def send_mail_test():
+#     send_mail(
+#         "Celery is working",
+#         "Celery is working",
+#         EMAIL_HOST_USER,
+#         [
+#             "vormagic@ya.ru",
+#         ],
+#     )
+
 
 @shared_task
 def check_inactive_users():
